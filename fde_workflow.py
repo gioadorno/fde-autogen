@@ -176,8 +176,7 @@ if __name__ == "__main__":
     groupchat = autogen.GroupChat(
         agents=[user_proxy, discovery_agent, architect_agent, ticket_agent],
         messages=[],
-        max_round=6,
-        speaker_selection_method="round_robin"
+        max_round=6
     )
 
     manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=llm_config)
