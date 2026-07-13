@@ -3,6 +3,7 @@ import argparse
 import os
 import chromadb
 from datetime import datetime
+import agentops
 
 # ==============================================================================
 # 1. Configuration & Argument Parsing
@@ -10,6 +11,9 @@ from datetime import datetime
 parser = argparse.ArgumentParser(description="AI-Powered FDE Orchestrator")
 parser.add_argument("input_file", help="Path to the raw Markdown meeting notes (e.g., ~/Obsidian/meeting.md)")
 args = parser.parse_args()
+
+# Initialize AgentOps for LLM Observability
+agentops.init(api_key=os.environ.get("AGENTOPS_API_KEY", "optional-fallback-key"))
 
 # Determine Output Files
 input_path = os.path.abspath(args.input_file)
