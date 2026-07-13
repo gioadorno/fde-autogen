@@ -252,6 +252,16 @@ if __name__ == "__main__":
         message=f"Here is the Product Spec and Architect constraints. Please break them down into tickets and CALL the 'create_linear_ticket' tool for EACH ticket.\n\nSPEC:\n{product_spec}\n\nCONSTRAINTS:\n{architecture_review}",
         clear_history=True
     )
+    final_tickets = user_proxy.last_message(ticket_agent)["content"]
+
+    # Guarantee the tickets are saved to the plan file, even if tool calling fails on local models
+    try:
+        with open(output_plan_file, "a") as f:
+            f.write("\n\n## Generated Linear Tickets\n\n")
+            f.write(final_tickets)
+            f.write("\n\n---\n*End of FDE Plan*\n")
+    except Exception as e:
+        print(f"[Warning] Could not append final tickets to plan file: {e}")
 
     # Sync VectorDB to Markdown at the end of the run
     sync_vectordb_to_markdown()
