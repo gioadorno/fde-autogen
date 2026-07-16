@@ -25,7 +25,7 @@ knowledge_base_file = os.path.join(output_dir, "fde_knowledge_base.md")
 # Load LLM Config
 config_list = [
     {
-        "model": "gemini-3.1-pro-preview",
+        "model": os.environ.get("VERTEX_MODEL_NAME", "gemini-3.1-pro-preview"),
         "api_type": "google",
         "project": os.environ.get("GOOGLE_VERTEX_PROJECT", "extreme-karma-gm"),
         "location": os.environ.get("GOOGLE_VERTEX_LOCATION", "global")

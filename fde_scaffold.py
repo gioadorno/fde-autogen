@@ -22,7 +22,7 @@ def fetch_ticket_context(ticket_id):
 llm_config = {
     "config_list": [
         {
-            "model": "gemini-3.1-pro-preview",
+            "model": os.environ.get("VERTEX_MODEL_NAME", "gemini-3.1-pro-preview"),
             "api_type": "google",
             "project": os.environ.get("GOOGLE_VERTEX_PROJECT", "extreme-karma-gm"),
             "location": os.environ.get("GOOGLE_VERTEX_LOCATION", "global")
