@@ -1,6 +1,6 @@
 package main
 
-import "github.com/gioadorno/fde-cli/cmd"
+import "github.com/gioadorno/nexus-cli/cmd"
 
 func main() {
     cmd.Execute()

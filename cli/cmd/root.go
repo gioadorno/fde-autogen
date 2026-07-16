@@ -7,8 +7,8 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "fde",
-	Short: "FDE AutoGen Orchestrator",
+	Use:   "nexus",
+	Short: "Nexus Orchestrator",
 	Long:  `A CLI tool to orchestrate the Forward Deployed Engineering AI workflow.`,
 }
 

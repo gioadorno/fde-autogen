@@ -1,4 +1,4 @@
-module github.com/gioadorno/fde-cli
+module github.com/gioadorno/nexus-cli
 
 go 1.26.5
 
