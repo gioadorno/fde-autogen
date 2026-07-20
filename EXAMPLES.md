@@ -6,11 +6,11 @@ This document outlines the standard Forward Deployed Engineering (FDE) workflows
 
 ```mermaid
 graph TD
-    A[Raw Meeting Notes] -->|nexus process| B(Nexus Orchestrator)
-    B -->|Vertex AI| C[Gherkin Tickets]
-    C -->|nexus scaffold| D[Staging Area]
-    D -->|nexus apply| E[Client Systems Monorepo]
-    D -->|nexus apply| F[Monkey See Monorepo]
+    A[Raw Meeting Notes] -->|nexus process| B(Nexus GroupChat)
+    B -->|Debate & RAG| C[Gherkin Tickets]
+    C -->|nexus scaffold| D[Git Worktree Lane]
+    D -->|nexus apply| E[Backend Monorepo]
+    D -->|nexus apply| F[Frontend Monorepo]
     E -.->|Bazel Build| G{Verification}
     G -- Success --> H[Commit Ready]
     G -- Fail --> I[Self-Healing Loop]
@@ -21,7 +21,7 @@ graph TD
 
 ## 1. Processing Raw Notes (`nexus process`)
 
-Top-tier FDEs take chaotic client meetings and instantly turn them into actionable engineering tickets.
+Top-tier FDEs take chaotic client meetings and instantly turn them into actionable engineering tickets. The new architecture uses an interactive GroupChat where the Architect stress-tests the PM's spec before anything is written to Linear.
 
 **The Input (`client_meeting.md`):**
 ```markdown
@@ -32,71 +32,65 @@ Also, add a green/red status indicator for campaign health. Budget pacing is a m
 
 **The Command:**
 ```bash
-$ nexus process client_meeting.md
+$ nexus process client_meeting.md --interactive
 ```
 
-**The Output (Automatically saved to `FDE_Plan.md`):**
-```markdown
-=== TICKET ===
-TITLE: Frontend - Health Status Indicators
-DESCRIPTION:
-**User Story:** As a Campaign Manager, I want visual color-coded indicators so that I can quickly spot accounts needing attention.
-
-**Technical Steps:**
-- Create a lightweight fetch to `/user/preferences`
-- Render Green, Yellow, or Red pill badges based on evaluation.
-
-**Acceptance Criteria (Gherkin):**
-Given a user preference where CPM >= $4.00 is Red
-When the BFF returns an account with a $4.50 CPM
-Then the frontend evaluates the raw number and renders a Red pill badge for that metric.
-
-**Blockers & Edge Cases:**
-- Blocker: Missing endpoints require fallback default thresholds.
+**Console Output:**
+```text
+[Discovery_Agent] Outputting drafted Product Spec based on meeting...
+[Architect_Agent] REJECTED. The spec fails to account for rate limits on the pacing API. Please revise.
+[Discovery_Agent] Revised Product Spec accounting for rate limits and caching...
+[Architect_Agent] ARCHITECTURE APPROVED.
+[User_Proxy] Terminal paused. Proceed with ticket creation? (y/n): y
+[Ticket_Agent] Executing tool: create_linear_ticket("Frontend - Health Status Indicators")
 ```
 
 ---
 
 ## 2. Code Scaffolding (`nexus scaffold`)
 
-Once the tickets are approved, Nexus delegates to the FDE Architect and Builder agents to write the code in an isolated sandbox.
+Once the tickets are approved, Nexus delegates to the FDE Scaffolder agent to write the code natively into an isolated, airgapped Git worktree.
 
 **The Command:**
 ```bash
-$ nexus scaffold TICKET-001
+$ nexus scaffold CMS-4953
 ```
 
 **Console Output:**
 ```text
 [Nexus] Initializing Gemini 3.1 Pro via Vertex AI...
-[Architect_Agent] Analyzing TICKET-001 for architectural constraints...
-[Architect_Agent] Constraint added: Must use gRPC for backend communication.
-[Builder_Agent] Generating Go scaffolding for client-systems/cmd/health-api...
-[Builder_Agent] Generating TypeScript scaffolding for monkey-see/src/components/...
-✅ Scaffolding complete in ./TICKET-001_Scaffold/
+[Scaffolder] Analyzing CMS-4953 for architectural constraints...
+[Scaffolder] Executing tool: git_worktree_add("CMS-4953")
+[Scaffolder] Executing tool: write_file("backend/api/feedback.proto")
+[Scaffolder] Executing tool: write_file("frontend/src/feedback.service.ts")
+✅ Scaffold generated safely in .fde/worktrees/CMS-4953/
 ```
 
 ---
 
 ## 3. Applying and Verifying (`nexus apply`)
 
-Nexus moves the code from the sandbox to the real monorepos and runs a strict verification loop.
+Nexus moves the code from the worktree sandbox to the real monorepos and runs a strict verification loop.
 
 **The Command:**
 ```bash
-$ nexus apply ./TICKET-001_Scaffold
+$ nexus apply CMS-4953
 ```
 
 **Console Output:**
 ```text
-[Nexus] Copying files to ~/workspace/github.com/gioadorno/client-systems...
-[Nexus] Running Bazel Verification Loop...
+Ready to apply scaffold from: /home/gio/nexus/.fde/worktrees/CMS-4953
+This will copy files to your ~/workspace/ monorepos.
+
+Do you want to proceed? [y/N]: y
+[✓] Copied backend files...
+[✓] Copied frontend files...
+
+Running Bazel Build Verification in backend...
 $ bazel run //:gazelle
 $ bazel build //...
 INFO: Analyzed 42 targets (0 packages loaded, 0 targets configured).
 INFO: Found 42 targets...
-INFO: Elapsed time: 1.42s, Critical Path: 0.11s
-INFO: 1 process: 1 internal.
 ✅ Build completed successfully.
 🎉 Nexus deployment verified. Ready for commit.
 ```

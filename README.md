@@ -20,7 +20,7 @@
 - **Command:** `nexus apply <Ticket-ID>`
 - **Workflow:**
   1. Prompts the user for review and approval of the staged files in the worktree lane.
-  2. Copies the files into the actual `client-systems` and `monkey-see` workspaces.
+  2. Copies the files into the actual `backend` and `frontend` workspaces.
   3. Executes `bazel run //:gazelle` and `bazel build //...`.
   4. **Self-Healing:** If the Bazel build fails, the Go CLI automatically deletes the copied files to keep the workspace pristine, captures the compiler error log, and passes it back to an AutoGen `Fixer_Agent`. The AI diagnoses the error, rewrites the staged files using tool calling inside the worktree, and prepares for another apply.
 

@@ -43,19 +43,19 @@ var applyCmd = &cobra.Command{
 		}
 
 		// SIMULATION of file copy
-		fmt.Println("[\u2713] Copied client-systems files...")
-		fmt.Println("[\u2713] Copied monkey-see files...")
+		fmt.Println("[\u2713] Copied backend files...")
+		fmt.Println("[\u2713] Copied frontend files...")
 
 		// BAZEL VERIFICATION LOOP
 		homeDir, _ := os.UserHomeDir()
-		clientSystemsDir := filepath.Join(homeDir, "workspace", "github.com", "gioadorno", "client-systems")
+		backendDir := filepath.Join(homeDir, "workspace", "github.com", "gioadorno", "backend")
 
-		fmt.Println("\nRunning Bazel Build Verification in client-systems...")
+		fmt.Println("\nRunning Bazel Build Verification in backend...")
 		
 		// 1. Gazelle
 		fmt.Println("$ bazel run //:gazelle")
 		gazelleCmd := exec.Command("bazel", "run", "//:gazelle")
-		gazelleCmd.Dir = clientSystemsDir
+		gazelleCmd.Dir = backendDir
 		err = gazelleCmd.Run()
 		if err != nil {
 			// Expected if bazel isn't globally installed or setup perfectly in this env
@@ -66,7 +66,7 @@ var applyCmd = &cobra.Command{
 		// 2. Build
 		fmt.Println("$ bazel build //...")
 		buildCmd := exec.Command("bazel", "build", "//...")
-		buildCmd.Dir = clientSystemsDir
+		buildCmd.Dir = backendDir
 		err = buildCmd.Run()
 		if err != nil {
 			handleBazelFailure(ticketSlug, "build_error.log", err)

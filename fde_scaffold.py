@@ -15,8 +15,8 @@ def fetch_ticket_context(ticket_id):
     print(f"[Linear API] Fetching context for {ticket_id}...")
     return f"""
     Ticket: {ticket_id} - Backend: Implement PTC Feedback Service
-    Description: We need a new gRPC service in client-systems to handle PTC Feedback. 
-    It requires a feedback.proto file. We also need the Angular frontend in monkey-see to have a basic feedback.service.ts to call it.
+    Description: We need a new gRPC service in backend to handle PTC Feedback. 
+    It requires a feedback.proto file. We also need the Angular frontend in frontend to have a basic feedback.service.ts to call it.
     """
 
 llm_config = {
@@ -65,7 +65,7 @@ def git_worktree_add(slug: Annotated[str, "The ticket slug to use for the worktr
 @user_proxy.register_for_execution()
 def write_file(
     slug: Annotated[str, "The ticket slug matching the worktree"],
-    path: Annotated[str, "The file path relative to the repository root (e.g. client-systems/api/feedback.proto)"],
+    path: Annotated[str, "The file path relative to the repository root (e.g. backend/api/feedback.proto)"],
     content: Annotated[str, "The exact file contents"]
 ) -> str:
     """Writes a file strictly inside the designated worktree lane."""
